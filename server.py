@@ -1,6 +1,7 @@
 from pathlib import Path
 import tornado.ioloop
 import tornado.web
+import tornado.websocket
 import tornado.options
 import asyncio
 import signal
@@ -11,25 +12,22 @@ logger = getLogger(__name__)
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        # テンプレート（エンジン）を使って、動的にHTMLを生成する
-        # https://tornadokevinlee.readthedocs.io/en/latest/guide/templates.html
+        self.render('index.html')
 
-        # URLパラメータを渡す（第2引数：default値） http://localhost:8888/?name=yourname
-        name = self.get_argument('name', 'World')
 
-        # リストを渡す（index.html側で展開）
-        items = ['apple', 'orange', 'grape']
+class WebSocketHandler(tornado.websocket.WebSocketHandler):
+    # 接続開始
+    def open(self):
+        logger.info('WebSocket is open.')
 
-        # 辞書で変数を一気に渡す
-        texts = {
-            'text1': 'aaa',
-            'text2': 'bbb',
-            'text3': 'ccc',
-        }
-        self.render(
-            'index.html',
-            title='Tornado', name=name, items=items, **texts
-        )
+    # 受信
+    def on_message(self, message):
+        logger.info('WebSocket message received: ' + message)
+        self.write_message('Hello client!')
+
+    # 接続終了
+    def on_close(self):
+        logger.info('WebSocket is closed.')
 
 
 class ShutdownManager():
@@ -50,6 +48,7 @@ class ShutdownManager():
 app = tornado.web.Application(
     [
         (r'/', MainHandler),
+        (r'/websocket', WebSocketHandler),
     ],
     template_path=Path('templates'),
     static_path=Path('static'),
