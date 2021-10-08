@@ -10,7 +10,7 @@ logger = getLogger(__name__)
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.write("Hello, world")
+        self.write('Hello world!')
 
 
 class ShutdownManager():
@@ -29,12 +29,12 @@ class ShutdownManager():
 
 
 app = tornado.web.Application([
-    (r"/", MainHandler),
+    (r'/', MainHandler),
 ])
 shutdown_manager = ShutdownManager()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # windowsで実行する場合, イベントループポリシーを変更する
     policy = asyncio.WindowsSelectorEventLoopPolicy()
     asyncio.set_event_loop_policy(policy)
