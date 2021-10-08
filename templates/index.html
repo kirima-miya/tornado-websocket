@@ -7,30 +7,43 @@
   </head>
   <body>
     <h1>Hello, Tornado!</h1>
+    <input type="button" value="Send" onclick="webSocketSend();" />
+
     <script>
-      const socket = new WebSocket("ws://localhost:8888/websocket");
+      let socket;
 
-      // 接続開始
-      socket.onopen = function (event) {
-        console.log("WebSocket is open.");
-        socket.send("Hello server!");
-        // socket.close();
-      };
+      function webSocketStart() {
+        socket = new WebSocket("ws://localhost:8888/websocket");
 
-      // エラー検知
-      socket.onerror = function (event) {
-        console.error("WebSocket error observed:", event);
-      };
+        // 接続開始
+        socket.onopen = function (event) {
+          console.log("WebSocket is open.");
+          // socket.close();
+        };
 
-      // 受信
-      socket.onmessage = function (event) {
-        console.log("WebSocket message received:\n", event.data);
-      };
+        // エラー検知
+        socket.onerror = function (event) {
+          console.error("WebSocket error observed:", event);
+        };
 
-      // 接続終了
-      socket.onclose = function (event) {
-        console.log("WebSocket is closed.");
-      };
+        // 受信
+        socket.onmessage = function (event) {
+          console.log("WebSocket message received:\n", event.data);
+        };
+
+        // 接続終了
+        socket.onclose = function (event) {
+          console.log("WebSocket is closed.");
+        };
+      }
+
+      function webSocketSend() {
+        message = "Hello server!";
+        console.log("WebSocket message sent:\n", message);
+        socket.send(message);
+      }
+
+      webSocketStart();
     </script>
   </body>
 </html>

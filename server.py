@@ -19,11 +19,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
     # 接続開始
     def open(self):
         logger.info('WebSocket is open.')
+        self.write_message('Hello client! Your objectID is ' + str(id(self)))
 
     # 受信
     def on_message(self, message):
-        logger.info('WebSocket message received: ' + message)
-        self.write_message('Hello client!')
+        logger.info(
+            f'WebSocket message received (from: {str(id(self))}): {message}'
+        )
 
     # 接続終了
     def on_close(self):
