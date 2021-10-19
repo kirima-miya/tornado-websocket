@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tornado WebSocket</title>
+    <link rel="stylesheet" href="{{ static_url('style.css') }}" />
+  </head>
+  <body>
+    <h1>Hello, Tornado!</h1>
+    <input type="button" value="Send" onclick="webSocketSend();" />
+
+    <script>
+      let socket;
+
+      function webSocketStart() {
+        socket = new WebSocket("ws://localhost:8888/websocket");
+
+        // 接続開始
+        socket.onopen = function (event) {
+          console.log("WebSocket is open.");
+          // socket.close();
+        };
+
+        // エラー検知
+        socket.onerror = function (event) {
+          console.error("WebSocket error observed:", event);
+        };
+
+        // 受信
+        socket.onmessage = function (event) {
+          console.log("WebSocket message received:\n", event.data);
+        };
+
+        // 接続終了
+        socket.onclose = function (event) {
+          console.log("WebSocket is closed.");
+        };
+      }
+
+      function webSocketSend() {
+        message = "Hello server!";
+        console.log("WebSocket message sent:\n", message);
+        socket.send(message);
+      }
+
+      webSocketStart();
+    </script>
+  </body>
+</html>
