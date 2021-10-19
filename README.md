@@ -2,6 +2,15 @@
 
 Tornado(Python web framework)を用いた WebSocket 通信
 
+**クライアント用ページ**
+
+- http://localhost:8888/
+
+- アクセス時、WebSocket コネクション確立。<br>
+  サーバーから受信したオブジェクト ID をコンソールに表示。<br>
+
+- sent ボタン押下で、サーバー側ターミナルにメッセージ表示。
+
 # 実行環境
 
 - Anaconda (Python3.8.5 + ライブラリ群)
