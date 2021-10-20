@@ -4,6 +4,7 @@ import tornado.web
 import tornado.websocket
 import tornado.options
 import asyncio
+import urllib
 import signal
 from logging import getLogger
 
@@ -16,9 +17,19 @@ class MainHandler(tornado.web.RequestHandler):
 
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
+    # 接続制限（domain_limitを含むサイトからの接続を許可する）
+    def check_origin(self, origin):
+        parsed_origin = urllib.parse.urlparse(origin)
+
+        host = self.request.headers.get("Host")  # ex. localhost:8888
+        vscode_liveserver = '127.0.0.1:5500'
+        domain_limit = (host, vscode_liveserver)
+
+        return parsed_origin.netloc.endswith(domain_limit)
+
     # 接続開始
     def open(self):
-        logger.info('WebSocket is open.')
+        logger.info(f'WebSocket is open. (objectID: {str(id(self))})')
         self.write_message('Hello client! Your objectID is ' + str(id(self)))
 
     # 受信
@@ -29,7 +40,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
     # 接続終了
     def on_close(self):
-        logger.info('WebSocket is closed.')
+        logger.info(f'WebSocket is closed. (objectID: {str(id(self))})')
 
 
 class ShutdownManager():
