@@ -17,15 +17,15 @@ class MainHandler(tornado.web.RequestHandler):
 
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
-    # 接続制限（domain_limitを含むサイトからの接続を許可する）
+    # 接続制限（permit_domainに含まれるサイトからの接続を許可する）
     def check_origin(self, origin):
         parsed_origin = urllib.parse.urlparse(origin)
 
         host = self.request.headers.get("Host")  # ex. localhost:8888
         vscode_liveserver = '127.0.0.1:5500'
-        domain_limit = (host, vscode_liveserver)
+        permit_domain = (host, vscode_liveserver)
 
-        return parsed_origin.netloc.endswith(domain_limit)
+        return parsed_origin.netloc.endswith(permit_domain)
 
     # 接続開始
     def open(self):
